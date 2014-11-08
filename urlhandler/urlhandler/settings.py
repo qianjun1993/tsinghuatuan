@@ -59,12 +59,12 @@ WSGI_APPLICATION = 'urlhandler.wsgi.application'
 if 'SERVER_SOFTWARE' in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'NYenZfWMVWuqtUGNuQsI',
-            'USER': '6jIVijhGUVreXBNI6jYzZGlt',
-            'PASSWORD': 'AxB1w67ddB4cwkCLw3gQSoBjGUcICUL3',
-            'HOST': 'sqld.duapp.com',
-            'PORT': '4050',
+             'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'wx5_weixin',
+            'USER': 'wx5',
+            'PASSWORD': 'IezFdfqx3nQYRQBS',
+            'HOST': 'db.igeek.asia',
+            'PORT': '3306',
             }
     }
     #con = MySQLdb.Connect(host = "sqld.duapp.com",
@@ -78,21 +78,21 @@ elif (os.environ.get('USER', '') == 'ssastadmin') or ('SSAST_DEPLOYMENT' in os.e
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'tsinghuatuan',
-            'USER': 'tsinghuatuan',
-            'PASSWORD': 'MA4vXQSAdcWkoZfI',
-            'HOST': '',
-            'PORT': '',
+            'NAME': 'wx5_weixin',
+            'USER': 'wx5',
+            'PASSWORD': 'IezFdfqx3nQYRQBS',
+            'HOST': 'db.igeek.asia',
+            'PORT': '3306',
             }
     }
 else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'tsinghuatuan',
-            'USER': 'root',
-            'PASSWORD': '',
-            'HOST': '127.0.0.1',
+            'NAME': 'wx5_weixin',
+            'USER': 'wx5',
+            'PASSWORD':'IezFdfqx3nQYRQBS',
+            'HOST': 'db.igeek.asia',
             'PORT': '3306',
         }
     }

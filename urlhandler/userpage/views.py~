@@ -72,7 +72,7 @@ def validate_post(request):
         raise Http404
     secret = request.POST['password'].encode('gb2312')
     validate_result = validate_through_AuthTHU(secret)
-    if  validate_result == 'Success':
+    if json.loads(validate_result)["message"] == 'Success':
         openid = request.POST['openid']
         try:
             User.objects.filter(stu_id=userid).update(status=0)

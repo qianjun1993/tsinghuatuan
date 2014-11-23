@@ -8,7 +8,7 @@
 var xmlhttp = null;
 var mytime = null;
 var myopenid
-var hostIP="http://wx5.igeek.asia"
+var hostIP="http://59.66.137.98"
 
 function hideElem(id) {
     document.getElementById(id).setAttribute('style', 'display:none');
@@ -87,12 +87,12 @@ function readyStateChanged() {
                     showElem('successHolder');
                     return;
 
-                case 'Wrong username or password':
+                case 'Rejected':
+                case 'Timeout':
                     showError('passwordGroup', 'helpPassword', '密码错误！请输入info登录密码');
                     break;
 
                 case 'Error':
-		default:
                     showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。')
                     break;
             }

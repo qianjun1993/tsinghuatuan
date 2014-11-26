@@ -90,7 +90,7 @@ function readyStateChanged() {
                     showError('submitGroup', 'helpSubmit', '用户名或密码错误！请重新输入')
 			
                     break;
-                case'Out of date':
+                case'Out of date.':
  	            showError('submitGroup', 'helpSubmit', '请稍后重试。')
 		    break;
                 case 'Error':

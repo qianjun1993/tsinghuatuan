@@ -7,8 +7,8 @@
 
 var xmlhttp = null;
 var mytime = null;
-var myopenid
-var hostIP="http://59.66.137.98"
+var myopenid;
+var hostIP="http://59.66.137.109";
 
 function hideElem(id) {
     document.getElementById(id).setAttribute('style', 'display:none');
@@ -77,23 +77,26 @@ function readyStateChanged() {
         if (xmlhttp.status==200)
         {// 200 = OK
             var result = xmlhttp.responseText;
-            console.log(result);
             switch (result)
             {
                 case 'Success':
                     //document.getElementById('validationHolder').setAttribute('hidden', 'hidden');
+                   
                     hideElem('validationHolder');
                     //document.getElementById('successHolder').removeAttribute('hidden');
                     showElem('successHolder');
                     return;
-
-                case 'Rejected':
-                case 'Timeout':
-                    showError('passwordGroup', 'helpPassword', '密码错误！请输入info登录密码');
+                case 'Wrong username or password':
+                    showError('submitGroup', 'helpSubmit', '用户名或密码错误！请重新输入')
+			
                     break;
-
+                case'Out of date':
+ 	            showError('submitGroup', 'helpSubmit', '请稍后重试。')
+		    break;
                 case 'Error':
+		default:
                     showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。')
+			
                     break;
             }
         }
@@ -149,6 +152,7 @@ function submitValidation2()
 function submitValidation(openid) {
     if (checkUsername() & checkPassword()) {
 	myopenid = openid;
+        mytime = null;
 	disableAll(true);
      	showLoading(true);
 	xmlhttp = new XMLHttpRequest();

@@ -1,0 +1,52 @@
+{% extends "mobile_base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}
+选择座位 - 清华紫荆之声
+{% endblock %}
+
+{% block css %}
+<link href="{% static "css/seat.css" %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block js %}
+	<script src="{% static "js/seat.js" %}"></script>
+	<script>
+	function ajaxForm() {
+		getMap('{{seat_row_total}}', '{{seat_line_total}}', '{{seat_map_detail}}');
+	}
+        function ajaxForm2() {
+                checkseat('{{ ticketid }}')
+	}
+	ajaxForm();
+	</script>>
+{% endblock %}
+
+{% block content %}
+
+	<div id="wrap">
+		<canvas id="myCanvas"></canvas>
+                <img id= "available" style = "display:none" src="{% static "img/available.jpg" %}" />
+                <img id= "unavailable" style = "display:none" src="{% static "img/unavailable.jpg" %}" />
+		<img id= "chosen" style = "display:none" src="{% static "img/chosen.jpg" %}" />
+	</div>
+        <div id="seatHolder">
+        <form class="form-horizontal" role="form" action="{% url "userpage.views.selectseat" %}" method="post" id="seatForm" onsubmit="return false;">
+            {% csrf_token %}
+        <div class="form-group" id="submitGroup">
+            <div>
+              <button onclick="ajaxForm2();" class="btn btn-default" id="submitBtn">提交</button>
+              <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在提交，请稍候...</p>
+              <p class="help-block" id="helpSubmit"></p>
+            </div>
+          </div>
+         </form>
+         </div>
+	<div id="successHolder" style="display: none">
+        <img src="{% static "img/success.png" %}" />
+        <p>选择座成功！</p>
+    </div>
+
+{% endblock %}
+

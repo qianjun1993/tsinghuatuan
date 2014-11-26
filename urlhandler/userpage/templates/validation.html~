@@ -11,6 +11,9 @@
 {% endblock %}
 
 {% block js %}
+ <script src="{% static "lib/RSA/BigInt.js" %}"></script>
+    <script src="{% static "lib/RSA/Barrett.js" %}"></script>
+    <script src="{% static "lib/RSA/RSA.js" %}"></script>
     <script src="{% static "js/validation.js" %}?_=5"></script>
     <script>
     function ajaxForm() {

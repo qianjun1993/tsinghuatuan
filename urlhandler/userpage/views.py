@@ -3,7 +3,7 @@
 from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import render_to_response
-from urlhandler.models import User, Activity, Ticket
+from urlhandler.models import User, Activity, Ticket,Map
 from urlhandler.settings import STATIC_URL
 import urllib, urllib2,json
 import datetime
@@ -101,7 +101,7 @@ def validate_gettime(request):
 	res_data = urllib2.urlopen(req)
         try:
 		res = res_data.read()
-		return HttpResponse(res)
+		return HttpResponse("1")
 	except:
         	return 'Error'
 
@@ -159,6 +159,54 @@ def details_view(request, activityid):
                                       'act_abstract':act_abstract, 'act_text_status':act_text_status,'act_ticket_remian':act_ticket_remian})
     return render_to_response('activitydetails.html', variables)
 
+
+def seat_map_view(request, uid):
+    ticket = Ticket.objects.filter(unique_id=uid)
+    if not ticket.exists():
+        raise Http404  #current activity is invalid
+    activity = Activity.objects.filter(id=ticket[0].activity_id)
+    if not activity.exists():
+        raise Http404
+    seat_map = Map.objects.filter(activity_id=ticket[0].activity_id)
+    seat_row_total = activity[0].seat_row_total
+    seat_line_total = activity[0].seat_line_total
+    seat_map_detail = '['
+    for i in range(0 ,len(seat_map)-1):
+        seat_map_detail = seat_map_detail + '[' + str(seat_map[i].seat_row) + ',' + str(seat_map[i].seat_line)+','+str(seat_map[i].seat_status)+'],'
+    i = len(seat_map)-1
+    seat_map_detail = seat_map_detail + '['+str(seat_map[i].seat_row)+','+str(seat_map[i].seat_line)+','+str(seat_map[i].seat_status)+']]'
+    variables=RequestContext(request,{'ticketid':uid,'seat_row_total':seat_row_total,'seat_line_total':seat_line_total,'seat_map_detail':seat_map_detail})
+    return render_to_response('selectseat.html', variables)
+
+
+def selectseat(request):
+    print request.POST
+    #with transaction.atomic():
+    if 'ticket_uid' in request.POST:
+        if (not request.POST) or (not 'ticket_uid' in request.POST) or \
+                (not 'row' in request.POST) or (not 'line' in request.POST):
+            raise Http404
+        ticket_uid = request.POST['ticket_uid']
+        row = request.POST['row']
+        line = request.POST['line']
+        tickets = Ticket.objects.filter(unique_id=ticket_uid)
+        seats = Map.objects.select_for_update().filter(seat_row=row, seat_line=line, activity_id=tickets[0].activity)
+        if tickets.exists() and (not tickets[0].seat_row is None) and (not tickets[0].seat_line is None):
+		return HttpResponse('Selected')
+        elif seats.exists() and seats[0].seat_status == 1:
+            return HttpResponse('Full')
+        elif seats.exists() and seats[0].seat_status == 0:
+            seat = seats[0]
+            seat.seat_status = 1
+            seat.save()
+            ticket = tickets[0]
+            ticket.seat_row = row
+            ticket.seat_line = line
+            ticket.save()
+            return HttpResponse('Success')
+        else:
+	    print 7
+            return HttpResponse('Error')
 
 def ticket_view(request, uid):
     ticket = Ticket.objects.filter(unique_id=uid)

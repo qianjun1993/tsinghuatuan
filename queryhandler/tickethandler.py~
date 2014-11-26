@@ -259,10 +259,16 @@ def response_cancel_ticket(msg):
                 ticket = tickets[0]
                 ticket.status = 0
 		if(not ticket.seat_row is None) and (not ticket.seat_line is None):
+			print activity
+			print ticket.seat_row
+			print ticket.seat_line
 			seats = Map.objects.filter(activity_id=activity,seat_row = ticket.seat_row,seat_line=ticket.seat_line)
 			if seats.exists():
+				print 11111111
 				seat = seats[0];
 				seat.seat_status = 0;
+				print seat.seat_row;
+				print seat.seat_line;
 				seat.save();
 			ticket.seat_row = None
 			ticket.seat_line = None

@@ -50,7 +50,7 @@
             	</div>
         	{% endif %}
 	{% elif ticket_seat_row == 0 %}
-		{% if ticket_seat != '' %}
+		{% if ticket_seat != ' ' %}
             	<div class="ticket-wrapper">
                		说明：<span class="status-size ticket-used">您尚未选座</span>
             	</div>

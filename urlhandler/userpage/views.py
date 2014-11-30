@@ -224,11 +224,11 @@ def ticket_view(request, uid):
     if act_endtime < now:#表示活动已经结束
         ticket_status = 3
     ticket_seat = ticket[0].seat
-	if activity[0].seat_status > 0 and (not ticket[0].seat_row is None) and (not ticket[0].seat_line is None):
+    if activity[0].seat_status > 0 and (not ticket[0].seat_row is None) and (not ticket[0].seat_line is None):
     	ticket_seat_row = ticket[0].seat_row+1
     	ticket_seat_line =  ticket[0].seat_line+1
     else :
-		ticket_seat_row = 0
+	ticket_seat_row = 0
     	ticket_seat_line =  0
     act_photo = "http://qr.ssast.org/fit/"+uid
     variables=RequestContext(request,{'act_id':act_id, 'act_name':act_name,'act_place':act_place, 'act_begintime':act_begintime,

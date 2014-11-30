@@ -86,7 +86,7 @@ function readyStateChanged() {
                     //document.getElementById('successHolder').removeAttribute('hidden');
                     showElem('successHolder');
                     return;
-                case 'Wrong username or password':
+                case 'Wrong username or password.':
                     showError('submitGroup', 'helpSubmit', '用户名或密码错误！请重新输入')
 			
                     break;

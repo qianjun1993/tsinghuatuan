@@ -176,7 +176,7 @@ def response_book_ticket(msg):
         ticket = book_ticket(user, key, now)
         if ticket is None:
             return get_reply_text_xml(msg, get_text_fail_book_ticket(activities[0], now))
-        elif activities[0].seat_status is '0'  :
+        elif activities[0].seat_status == 0 :
             return get_reply_single_ticket(msg, ticket, now, get_text_success_book_ticket())
         else :
 	    return get_reply_select_seat(msg, ticket, now, get_text_success_book_ticket())

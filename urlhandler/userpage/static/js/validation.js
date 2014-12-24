@@ -8,7 +8,8 @@
 var xmlhttp = null;
 var mytime = null;
 var myopenid;
-var hostIP="http://wx5.igeek.asia";
+var hostIP="http://wx5.igeek.asia"
+
 
 function hideElem(id) {
     document.getElementById(id).setAttribute('style', 'display:none');
@@ -91,10 +92,10 @@ function readyStateChanged() {
 			
                     break;
                 case'Out of date.':
- 	            showError('submitGroup', 'helpSubmit', '请稍后重试。')
-		    break;
+                    showError('submitGroup', 'helpSubmit', '您的网速有点慢,请稍后重试。')
+                    break;
                 case 'Error':
-		default:
+		        default:
                     showError('submitGroup', 'helpSubmit', '出现了奇怪的错误，我们已经记录下来了，请稍后重试。')
 			
                     break;
@@ -152,9 +153,10 @@ function submitValidation2()
 function submitValidation(openid) {
     if (checkUsername() & checkPassword()) {
 	myopenid = openid;
-        mytime = null;
-	disableAll(true);
-     	showLoading(true);
+    mytime = null;
+    hideElem("helpSubmit");
+    disableAll(true);
+    showLoading(true);
 	xmlhttp = new XMLHttpRequest();
 	xmlhttp.open('GET',hostIP+"/u/validate/gettime/",true);
 	xmlhttp.onreadystatechange = timereadyStateChanged;

@@ -1,0 +1,166 @@
+{% extends "activity_base.html" %}
+
+{% load staticfiles %}
+
+{% block activity-title %}反馈列表{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap-theme.css" %}">
+    <link rel="stylesheet" href="{% static "css/feedback_list.css" %}">
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/feedback_list.js" %}"></script>
+    <script> window.onload=function(){send_research();}</script>
+    <style>
+        body { padding-top: 70px; }
+        #gotoTop{display:none;position:fixed;top:75%;left:55%;cursor:pointer;margin-top:-50px;margin-left:520px;width:20px;text-align:center;border:1px solid #e0e0e0;background:#fff;}
+        #gotoTop{_position:absolute;_top:expression(documentElement.scrollTop + documentElement.clientHeight * 3/4 + "px")}
+        #gotoTop.hover{background:#5CB542;color:#fff;text-decoration:none;}
+    </style>
+{% endblock %}
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+{% block nav-li %}
+    <li><a class="btn-link" href="{% url "adminpage.views.activity_list" %}">活动列表</a></li>
+    <li class="{% block activity-list-active %}active{% endblock %}"><a class="btn-link" href="{% url "adminpage.views.feedback_list" %}">反馈列表</a></li>
+{% endblock %}
+
+{% block content %}
+<div class="mycontainer" xmlns="http://www.w3.org/1999/html">
+<form id="research" role="form" method="post" action="{% url "adminpage.views.feedback_post" %}" onsubmit="return false;">  
+    {% csrf_token %}
+    <nav class="navbar navbar-default " role="navigation">
+        <div class="container">
+                <div class="navbar-form navbar-left" role="search">
+                    <div class="input-group">
+                        <span class="input-group-addon">查询类别</span>
+                        <select id="message_type" class="form-control">
+                            <option>请选择查询类别</option>
+                            <option>Bug反馈</option>
+                            <option>功能建议</option>
+                            <option>活动反馈</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">状态</span>
+                        <select id="read_or_not" class="form-control">
+                            <option>全部</option>
+                            <option>尚未批阅</option>
+                            <option>已经批阅</option>
+                            <option>已经通过</option>
+                            <option>已经处理</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">开始日期</span>
+                        <input type="date" class="form-control" id="fromDate">
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">结束日期</span>
+                        <input type="date" class="form-control" id="toDate">
+                    </div>
+                </div>
+                <div class="navbar-form navbar-right" role="search">
+                    <a class="btn" onclick="ret_info()">搜索 <span class="glyphicon glyphicon-search"></span></a>
+                </div>
+                <div class="navbar-form navbar-right">
+                    <a class="btn" onclick="delete_all()">忽略全部</a>
+                </div>
+        </div>
+    </nav>
+
+    <div class="col-xs-1 mytest" style="height: 300px">
+
+    </div>
+
+    <div class="col-xs-10 mytest" style="height: auto">
+
+
+        <table id="contenttable" class="col-xs-offset-2 col-xs-8">
+
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="myDelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">忽略提示</h4>
+              </div>
+              <div class="modal-body">
+                
+                <h4 id="del_std_id">
+
+                </h4>
+             
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="conf_del" class="btn btn-primary" data-dismiss="modal" onclick="conf_del(this)">确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="myPass" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">采纳提示</h4>
+              </div>
+              <div class="modal-body">
+           
+                  <h4 id="pass_std_id">
+
+                  </h4>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="conf_pass" class="btn btn-primary" onclick="conf_pass(this)" data-dismiss="modal">确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade" id="myPunish" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">处理提示</h4>
+              </div>
+              <div class="modal-body">
+            
+                <h4 id="pnsh_std_id">
+
+                </h4>
+       
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="conf_pnsh" class="btn btn-primary" onclick="conf_pnsh(this)" data-dismiss="modal">确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="col-xs-12">
+            <ul id="info" class="pager"></ul>
+        </nav>
+    </div>
+
+    <div id="topbar" class="col-xs-1" style="height: 300px">
+
+    </div>
+</form>
+</div>
+{% endblock %}
+

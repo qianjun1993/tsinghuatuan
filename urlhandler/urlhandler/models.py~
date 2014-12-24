@@ -7,6 +7,7 @@ class User(models.Model):
     weixin_id = models.CharField(max_length=255)
     stu_id = models.CharField(max_length=255)
     status = models.IntegerField()
+    points = models.IntegerField()
     seed = models.FloatField(default=1024)
 
 class Activity(models.Model):
@@ -54,12 +55,18 @@ class Map(models.Model):
     seat_row = models.IntegerField()
     seat_line = models.IntegerField()
     seat_status = models.IntegerField()
-	# Something about seat_status
+    # Something about seat_status
     # -1: 座位不支持选择
     # 0: 可选座位
     # 1: 座位已被选 
 
-    		
+class Comment(models.Model):
+    stu_id = models.CharField(max_length=255)
+    description = models.TextField()
+    time = models.DateTimeField()
+    ctype = models.IntegerField()
+    checktype = models.IntegerField()
+    
 
 '''
 class UserSession(models.Model):

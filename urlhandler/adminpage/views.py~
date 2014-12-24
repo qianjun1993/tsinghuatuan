@@ -25,6 +25,7 @@ import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
 import map
+import model
 
 
 
@@ -303,7 +304,7 @@ def activity_post(request):
                                             content_type='application/json')
             activity = activity_create(post)
             rtnJSON['updateUrl'] = s_reverse_activity_detail(activity.id)
-        rtnJSON['activity'] = wrap_activity_dict(activity)
+        rtnJSON['activity'] = wrap_activity_dict(activity) 
         if 'publish' in post:
             updateErr = json.loads(add_new_custom_menu(name=activity.key, key=WEIXIN_BOOK_HEADER + str(activity.id))).get('errcode', 'err')
             if updateErr != 0:
@@ -500,3 +501,58 @@ def activity_export_stunum(request, actid):
     ##########################################保存
     wb.save(response)
     return response
+
+def feedback_list(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(s_reverse_admin_home())
+    return render_to_response('feedback_list.html', context_instance=RequestContext(request))
+
+
+def feedback_reponse(request):
+    if (not request.POST) or (not 'feedback_id' in request.POST) or (not 'checktype' in request.POST):
+        return HttpResponse("Error")
+        
+    feedback_id = request.POST['feedback_id']
+    checktype = request.POST['checktype']
+    try:
+        if model.change_feedback_models(feedback_id, checktype):
+            return HttpResponse(checktype)
+        else:
+            return HttpResponse("Error")
+    except:
+        return HttpResponse("Error")
+    
+
+def feedback_post(request):
+    if (not request.POST) or (not 'post_type' in request.POST):
+        return HttpResponse("Error")
+    if(request.POST['post_type']=='0'):
+        return feedback_search(request)
+    else:
+        return feedback_reponse(request)
+
+def feedback_search(request):
+    if (not 'feedback_start_time' in request.POST) or (not 'feedback_end_time' in request.POST) or (not 'ctype' in request.POST) or (not 'checktype' in request.POST):
+        return HttpResponse("Error")
+    checktype = request.POST['checktype']
+    feedback_start_time = request.POST['feedback_start_time']
+    feedback_end_time = request.POST['feedback_end_time']
+    ctype = request.POST['ctype']
+    try:
+        feedbackmodels = model.find_feedback_models(checktype, feedback_start_time, feedback_end_time, ctype)
+    except:
+        return HttpResponse("Error")
+    feedbacks = {}
+    count=len(feedbackmodels)
+    for feedback in feedbackmodels:
+        feedbackone={}
+        feedbackone["stu_id"]=feedback.stu_id
+        feedbackone["description"]=feedback.description
+        feedbackone["time"]=feedback.time.strftime("%Y-%m-%d-%H-%M-%S")
+        feedbackone["ctype"]=feedback.ctype
+        feedbackone["checktype"]=feedback.checktype
+        feedbackone["id"]=feedback.id
+        feedbacks[str(count)] = feedbackone
+        count=count-1
+    feedbacks[str(count)] = len(feedbackmodels)
+    return HttpResponse(json.dumps(feedbacks,ensure_ascii=False),content_type='application/json')

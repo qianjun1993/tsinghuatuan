@@ -241,4 +241,16 @@ def get_text_no_activity_menu():
 def get_text_please_select_seat():
     return '抢票成功，请选择座位。'
 
+def get_text_unbinded_user_feedback(openid):
+    return get_text_unbinded_template('反馈', openid)
+
+def get_reply_user_feedback(msg, user):
+    return get_text_link(s_reverse_user_feedback(user.weixin_id), '点此进入反馈页面')
+
+def get_text_unbinded_user_point(openid):
+    return get_text_unbinded_template('积分', openid)
+
+def get_reply_user_point(msg, user):
+    return '您好,您的积分是'+str(user.points);
+
 

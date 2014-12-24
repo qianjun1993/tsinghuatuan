@@ -1,0 +1,205 @@
+var info = [];
+
+function init(info){
+    for(var i=0;i<100;i++)
+    {
+		var temp = {
+            id: i+1,
+			userid: 2000000 + (i+1),
+			type: (i%3+1),
+			context: "information num " + i,
+			time: "2014-12-" + (i%31+1)
+		};
+        info[i] = temp;
+    }
+}
+
+function jump_to_pi(pagenum){
+    $("#content").children().remove();
+    $("#info").children().remove();
+    getpage(pagenum);
+}
+
+function getpagenum(pagei){
+    var pagenum = parseInt(info.length / 20) + 1;
+    var prevpage = pagei-1;
+    var nextpage = pagei+1;
+    if(pagei == 1)
+        $('#info').append(
+            "<li class='disabled'><a href='#topbar'>&laquo;上一页</a></li>"
+        );
+    else
+        $('#info').append(
+            "<li><a href='#topbar' onclick='jump_to_pi("+ prevpage +")'>&laquo;上一页</a></li>"
+        );
+    for(var i=1; i<pagenum; i++)
+    {
+        if(i==pagei)
+            $('#info').append(
+                "<li onclick='jump_to_pi(" + i + ")' id='page" + i + "'><a style='background-color: darkgrey' href='#topbar'>" + i + "<span class='sr-only'>(current)</span></a></li> "
+            );
+        else
+            $('#info').append(
+                "<li onclick='jump_to_pi(" + i + ")' id='page" + i + "'><a href='#topbar'>" + i + "<span class='sr-only'>(current)</span></a></li> "
+            );
+    }
+    if(pagenum == 1 || pagenum == pagei+1)
+        $('#info').append(
+            "<li class='disabled'><a>下一页&raquo;</a></li>"
+            );
+    else
+        $('#info').append(
+            "<li><a href='#topbar' onclick='jump_to_pi("+ nextpage +")'>下一页&raquo;</a></li>"
+            );
+}
+
+function getpage(pagei){
+    init(info);
+    if(info.length == 0){
+        $('#content').append(
+            "<div><h3>当前搜索无内容</h3></div>"
+        )
+        return;
+    }
+    var curnum = 0;
+    if(info.length - (pagei-1)*20 <= 20)
+        for(var i=0;i<info.length - (pagei-1)*20;i++)
+        {
+            curnum = (pagei-1)*20+i;
+           $('#content').append(
+               "<ul class='list-group'><li id='student_id' class='list-group-item'>学号："+ info[curnum].userid +"</li><li class='list-group-item'>  类型：" + info[curnum].type + "</li><li class='list-group-item'>内容：     " + info[curnum].context + "</li><li class='list-group-item'>时间：    " + info[curnum].time + "</li><li class='list-group-item' style='text-align: right'>" +
+                "<div id='info" + i + "' class='btn-group'><input id='delete' type='button' class='btn btn-info' value='忽略' data-toggle='modal' data-target='#myDelete' onclick='ret_delete(this)'/><input id='pass' type='button' class='btn btn-info' value='通过' data-toggle='modal' data-target='#myPass'onclick='ret_pass(this)'/><input id='punish' type='button' class='btn btn-info' value='处理' data-toggle='modal' data-target='#myPunish' onclick='ret_punish(this)'/></div></li></ul>"
+           );
+        }
+    else
+        for(var i=0;i<20; i++)
+        {
+            curnum = (pagei-1)*20+i;
+            $('#content').append(
+
+
+        /********************************将这段代替原来和上面的*************************************************************/
+
+
+                "<ul class='list-group'><li id='info_message' class='list-group-item'><span id='student_id'>学号："+ info[curnum].userid +"</span><span>  类型：" + info[curnum].type + "</span><span>  时间：    " + info[curnum].time + "</span></li><li class='list-group-item'>内容：     " + info[curnum].context + "</li><li class='list-group-item' style='text-align: right'>" +
+                "<div id='info" + i + "' class='btn-group'><input id='delete' type='button' class='btn btn-info' value='忽略' data-toggle='modal' data-target='#myDelete' onclick='ret_delete(this)'/><input id='pass' type='button' class='btn btn-info' value='通过' data-toggle='modal' data-target='#myPass'onclick='ret_pass(this)'/><input id='punish' type='button' class='btn btn-info' value='处理' data-toggle='modal' data-target='#myPunish' onclick='ret_punish(this)'/></div></li></ul>"
+            );
+        }
+    getpagenum(pagei);
+    gotoTop(10);
+    $('html,body').animate({scrollTop:0},100);
+}
+
+function gotoTop(min_height){
+    var gotoTop_html = '<div id="gotoTop"><span class="glyphicon glyphicon-arrow-up"> 返回顶部</span></div>';
+    $("#topbar").append(gotoTop_html);
+    $("#gotoTop").click(
+        function(){$('html,body').animate({scrollTop:0},700);
+    }).hover(
+        function(){$(this).addClass("hover");},
+        function(){$(this).removeClass("hover");
+    });
+    min_height ? min_height = min_height : min_height = 600;
+    $(window).scroll(function(){
+        var s = $(window).scrollTop();
+        if( s > min_height){
+            $("#gotoTop").fadeIn(100);
+        }else{
+            $("#gotoTop").fadeOut(200);
+        };
+    });
+}
+
+function ret_info(){
+    var message = $("#message_type");
+    var $fromDate = $("#fromDate");
+    var $toDate = $("#toDate");
+    alert(message.val());
+    alert(fromDate.value);
+    alert(toDate.value);
+}
+
+function ret_delete(obj) {
+
+/****************************将所有ret_函数第一句话改成这样*********************/
+
+    var std_id = $(obj).parent().parent().siblings("#info_message").children("#student_id").text();
+
+    $("#del_std_id").text(std_id)
+    var text_id = $(obj).parent().attr("id");
+    var temp_text_id = "text_" + text_id;
+    $(obj).parent().attr("id",temp_text_id);
+    if($("#conf_del")) {
+        $("#conf_del").attr("id", text_id);
+    }
+}
+
+function ret_pass(obj){
+    var std_id = $(obj).parent().parent().siblings("#student_id").text();
+    $("#pass_std_id").text(std_id)
+    var text_id = $(obj).parent().attr("id");
+    var temp_text_id = "text_" + text_id;
+    $(obj).parent().attr("id",temp_text_id);
+    if($("#conf_pass")) {
+        $("#conf_pass").attr("id", text_id);
+    }
+}
+
+function ret_punish(obj){
+    var std_id = $(obj).parent().parent().siblings("#student_id").text();
+    $("#pnsh_std_id").text(std_id)
+    var text_id = $(obj).parent().attr("id");
+    var temp_text_id = "text_" + text_id;
+    $(obj).parent().attr("id",temp_text_id);
+    if($("#conf_pnsh")) {
+        $("#conf_pnsh").attr("id", text_id);
+    }
+}
+
+function conf_del(obj){
+    var del = $(obj).attr("id");
+    del = "#text_" + del;
+
+    $(del).children("#delete").attr("disabled","disabled");
+    $(del).children("#delete").attr("value","已忽略");
+    $(obj).attr("id","conf_del");
+    $(del).children("#pass").attr("disabled","disabled");
+    $(del).children("#punish").attr("disabled","disabled");
+}
+
+function conf_pass(obj){
+    var pass = $(obj).attr("id");
+    pass = "#text_" + pass;
+    $(pass).children("#pass").attr("disabled","disabled");
+    $(pass).children("#pass").attr("value","正在处理");
+    $(obj).attr("id","conf_pass");
+    $(pass).children("#delete").attr("disabled","disabled");
+    $(pass).children("#punish").attr("disabled","disabled");
+    //处理通过
+    $(pass).children("#pass").attr("disabled","disabled");
+    $(pass).children("#pass").attr("value","已通过");
+    //处理不通过
+    $(pass).children("#pass").attr("disabled","");
+    $(pass).children("#pass").attr("value","通过");
+    $(pass).children("#delete").attr("disabled","");
+    $(pass).children("#punish").attr("disabled","");
+
+}
+
+function conf_pnsh(obj){
+    var pnsh = $(obj).attr("id");
+    pnsh = "#text_" + pnsh;
+    $(pnsh).children("#punish").attr("disabled","disabled");
+    $(pnsh).children("#punish").attr("value","已处理");
+    $(obj).attr("id","conf_pnsh");
+    $(pnsh).children("#pass").attr("disabled","disabled");
+    $(pnsh).children("#delete").attr("disabled","disabled");
+}
+
+function delete_all(){
+    $("#content #delete").attr("disabled","disabled");
+    $("#content #delete").attr("value","已忽略");
+    $("#content #pass").attr("disabled","disabled");
+    $("#content #punish").attr("disabled","disabled");
+}
+

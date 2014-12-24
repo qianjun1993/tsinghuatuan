@@ -1,0 +1,62 @@
+{% extends "mobile_base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}
+反馈-清华紫荆之声
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" href="{% static "css/bootstrap-theme.css" %}">
+    <link href="{% static "css/feedback.css" %}?_=3" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript" src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/feedback.js" %}?_=5"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <script>
+    var weixin_id='{{weixin_id}}';
+    </script>
+{% endblock %}
+
+{% block content %}
+     <div class="col-xs-1" style="height: auto"></div>
+      <div class="col-xs-10" style="height: auto">
+        <ul class="nav nav-pills" role="tablist">
+            <li role="presentation" ><a href="#tab1" data-toggle="tab">Bug</a></li>
+            <li role="presentation"><a href="#tab2" data-toggle="tab">功能</a></li>
+            <li role="presentation" class="active" ><a href="#tab3" data-toggle="tab">活动</a></li>
+        </ul>
+        <form class="form-horizontal" role="form" action="{% url "userpage.views.feedback_post" %}" method="post" id="feedbackForm" onsubmit="return false;">
+         {% csrf_token %}
+        <div class="tab-content">
+            <div class="tab-pane" id="tab1">
+                <textarea id="bug" name="bugrec" rows="8" class="form-control" placeholder="本应用存在什么bug" ></textarea>
+            </div>
+            <div class="tab-pane" id="tab2">
+                <textarea id="suggestion" name="suggestionrec" rows="8" class="form-control" placeholder="本应用还有那些功能可以改进" ></textarea>
+            </div>
+            <div class="tab-pane active" id="tab3">
+                <textarea id="activity" name="activityrec" rows="8" class="form-control" placeholder="您觉得本次活动有什么反馈" ></textarea>
+            </div>
+            <span id="button" type="button" class="col-xs-offset-8 btn-primary btn-sm glyphicon glyphicon-send" onclick="mysubmit();"> 提交</span>
+            <div class="form-group" id="submitGroup">
+            <div class="col-xs-offset-3 col-xs-9">
+            <p class="help-block" id="helpLoading" style="display: none"><img src="{% static "img/loading.gif" %}">正在提交，请稍候...</p>
+             <p class="help-block" id="helpSubmit"></p>
+             </div>
+          </div>
+        </div>
+        </form>
+        <div id="successHolder" style="display: none">
+        <img src="{% static "img/success.png" %}" />
+        <p>您的意见我们已经收到。</p>
+        <p>谢谢您的参与。</p>
+    </div>
+    </div>
+    <div class="col-xs-1" style="height: auto"></div>
+{% endblock %}

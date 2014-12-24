@@ -396,3 +396,23 @@ def get_reply_select_seat(msg, ticket, now, ext_desc=''):
     ))
 
 
+def check_user_feedback(msg):
+    return handler_check_text_header(msg, ['反馈'])
+
+def response_user_feedback(msg):
+    fromuser = get_msg_from(msg)
+    user = get_user(fromuser)
+    if user is None:
+        return get_reply_text_xml(msg, get_text_unbinded_user_feedback(fromuser))
+    return get_reply_text_xml(msg, get_reply_user_feedback(msg, user))
+
+def check_user_point(msg):
+    return handler_check_text_header(msg, ['积分'])
+
+def response_user_point(msg):
+    fromuser = get_msg_from(msg)
+    user = get_user(fromuser)
+    if user is None:
+        return get_reply_text_xml(msg, get_text_unbinded_user_point(fromuser))
+    return get_reply_text_xml(msg, get_reply_user_point(msg, user))
+

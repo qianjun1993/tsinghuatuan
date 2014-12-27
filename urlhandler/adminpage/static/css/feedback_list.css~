@@ -27,11 +27,18 @@
     
 }
 
-.student_id
+#student_id
 {
     padding-right:50px;
 }
-.mytype
+#mytype
 {
     padding-right:50px;
+}
+
+#tips
+{
+    font-size:20px;
+    text-align:center;
+    color:red;
 }

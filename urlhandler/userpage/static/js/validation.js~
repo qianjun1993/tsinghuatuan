@@ -8,7 +8,7 @@
 var xmlhttp = null;
 var mytime = null;
 var myopenid;
-var hostIP="http://59.66.137.123"
+var hostIP="http://59.66.137.177"
 
 
 function hideElem(id) {

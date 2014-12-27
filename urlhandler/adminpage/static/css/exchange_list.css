@@ -1,0 +1,54 @@
+.mycontainer
+{
+    position:absolute;
+    top:50px;
+    height:auto;
+    left:0px;
+    right:0px;
+}
+
+.research
+{
+    position:absolute;
+    height:auto;
+    left:0px;
+    right:0px;
+}
+
+.mytest
+{
+    position:absolute;
+}
+.content
+{
+    position:absolute;
+    left:0px;
+    right:0px;
+    
+}
+
+#student_id
+{
+    padding-right:50px;
+    font-size:20px;
+}
+#item_id
+{
+    padding-right:50px;
+    font-size:20px;
+}
+#button_id
+{
+    float:right;
+}
+#mytype
+{
+    padding-right:50px;
+}
+
+#tips
+{
+    font-size:20px;
+    text-align:center;
+    color:red;
+}

@@ -17,4 +17,8 @@ urlpatterns = patterns('',
 
                        url(r'^feedback/try/$', 'userpage.views.feedback_post'),  
                        url(r'^feedback/(?P<weixin_id>\S+)/$','userpage.views.feedback_view'),
+                       url(r'^exchange/try/$','userpage.views.exchange_post'),
+                       url(r'^exchange/(?P<weixin_id>\S+)/$','userpage.views.exchange_view'),
+                        url(r'^item/(?P<weixin_id>\S+)/$','userpage.views.item_view'),
+                        
                        )

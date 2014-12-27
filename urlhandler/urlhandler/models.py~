@@ -66,8 +66,18 @@ class Comment(models.Model):
     time = models.DateTimeField()
     ctype = models.IntegerField()
     checktype = models.IntegerField()
-    
 
+class Item(models.Model):
+    name = models.CharField(max_length=255)
+    pic_url = models.CharField(max_length=255)
+    total_number = models.IntegerField()
+    remain_number = models.IntegerField()
+    points = models.IntegerField()
+
+class Exchange(models.Model):
+    stu_id = models.CharField(max_length=255)
+    Item = models.ForeignKey(Item)
+    etype = models.IntegerField()
 '''
 class UserSession(models.Model):
     stu_id = models.CharField(max_length=255)

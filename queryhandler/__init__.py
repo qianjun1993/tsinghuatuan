@@ -22,6 +22,8 @@ handler_list = [
 
     {'check': check_user_feedback,          'response': response_user_feedback},
     {'check': check_user_point,          'response': response_user_point},
+    {'check': check_user_exchange,          'response': response_user_exchange},
+    {'check': check_user_item,          'response': response_user_item},
 ]
 
 

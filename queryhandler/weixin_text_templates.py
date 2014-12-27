@@ -253,4 +253,16 @@ def get_text_unbinded_user_point(openid):
 def get_reply_user_point(msg, user):
     return '您好,您的积分是'+str(user.points);
 
+def get_text_unbinded_user_exchange(openid):
+    return get_text_unbinded_template('兑换', openid)
+
+def get_reply_user_exchange(msg, user):
+    return '您好,您的积分是'+str(user.points)+'.'+get_text_link(s_reverse_user_exchange(user.weixin_id), '点此进入兑换页面');
+
+def get_text_unbinded_user_item(openid):
+    return get_text_unbinded_template('查看物品', openid)
+
+def get_reply_user_item(msg, user):
+    return '您好,您的积分是'+str(user.points)+'.'+get_text_link(s_reverse_user_item(user.weixin_id), '点此查看物品');
+
 

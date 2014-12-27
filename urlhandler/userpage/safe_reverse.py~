@@ -26,7 +26,8 @@ def s_reverse_activity_menu(actid):
 def s_reverse_user_feedback(weixin_id):
     return SITE_DOMAIN + reverse('userpage.views.feedback_view', kwargs={'weixin_id': weixin_id})
 
-def s_reverse_user_feedback(weixin_id):
-    return SITE_DOMAIN + reverse('userpage.views.feedback_view', kwargs={'weixin_id': weixin_id})
+def s_reverse_user_exchange(weixin_id):
+    return SITE_DOMAIN + reverse('userpage.views.exchange_view', kwargs={'weixin_id': weixin_id})
+
 
 

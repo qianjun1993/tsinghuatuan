@@ -12,7 +12,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db.models import F
 import urllib
 import urllib2
-from urlhandler.models import Activity, Ticket,User,Activity, Ticket,Comment
+from urlhandler.models import Activity, Ticket,User,Activity, Ticket,Comment, Item , Exchange
 from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
@@ -22,6 +22,25 @@ import xlwt
 import re
 from django.utils.http import urlquote
 from django.utils.encoding import smart_str
+
+def item_createone(item):
+    preDict = dict()
+    for k in ['name', 'points', 'pic_url','total_number']:
+        preDict[k] = item[k]
+    preDict['remain_number'] = preDict['total_number']
+    newact = Item.objects.create(**preDict)
+    return newact
+
+def wrap_item_dict(activity):
+    dt = model_to_dict(activity)
+    return dt
+
+def getallItem():
+    itemmodels = Item.objects.order_by('-id').all()
+    items = []
+    for item in itemmodels:
+        items += [wrap_item_dict(item)]
+    return items
 
 def checktype_str_to_int(str):
     if str == "none":
@@ -108,9 +127,9 @@ def change_feedback_models(feedback_id, checktype_str):
     if checktype_str == "already_ignore":
         feedback_point = 0
     elif checktype_str == "already_pass":
-        feedback_point = 5
+        feedback_point = 10
     elif checktype_str == "already_punish":
-        feedback_point = -10
+        feedback_point = -20
     else:
         feedback_point = 0
     if feedbackmodels.exists():
@@ -128,3 +147,50 @@ def change_feedback_models(feedback_id, checktype_str):
             return False
     else:
         return False
+
+def getexchanges(stu_id, checktype):
+    exchangemodels = find_exchange_models(stu_id, checktype) 
+    exchanges = {}
+    count=len(exchangemodels)
+    for exchange in exchangemodels:
+        exchangeone={}
+        exchangeone["stu_id"]=exchange.stu_id
+        item = exchange.Item
+        exchangeone["checktype"]=exchange.etype
+        exchangeone["id"]=exchange.id
+        exchangeone["name"]=item.name
+        exchanges[str(count)] = exchangeone
+        count=count-1
+    exchanges[str(count)] = len(exchangemodels)
+    return exchanges
+
+def success_exchange_models(exchange_id):
+    print exchange_id
+    exchangemodels = Exchange.objects.filter(id=exchange_id)
+    print 1
+    if exchangemodels.exists():
+        exchangemodel = exchangemodels[0]
+        exchangemodel.etype = 1
+        exchangemodel.save()
+        return True  
+    else:
+        return False
+    
+
+def find_exchange_models(stu_id, checktype):
+    if checktype == "-1":
+        if stu_id == "none":
+            exchangemodels = Exchange.objects.filter()
+        else:           
+            exchangemodels = Exchange.objects.filter(stu_id = stu_id)
+    elif checktype == "0":
+        if stu_id == "none":
+            exchangemodels = Exchange.objects.filter(etype = 0)
+        else:
+            exchangemodels = Exchange.objects.filter(etype = 0, stu_id = stu_id)    
+    elif checktype == "1":
+        if stu_id == "none":
+            exchangemodels = Exchange.objects.filter(etype = 1)
+        else:
+            exchangemodels = Exchange.objects.filter(etype = 1, stu_id = stu_id)   
+    return exchangemodels

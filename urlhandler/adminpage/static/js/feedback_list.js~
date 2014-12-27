@@ -145,6 +145,11 @@ function changeButtonGroup(i, pagei){
 
 
 function getpage(pagei){
+    if(info["0"]==0)
+    {
+        $('#contenttable').append("<ul class='list-group'><li id='tips' class='list-group-item'>目前尚没有未批阅的反馈消息"+"</li></ul>")
+        return;
+    }
     if(info["0"] - (pagei-1)*20 <= 20)
     {
         for(var i=0;i<info["0"] - (pagei-1)*20;i++)
@@ -162,6 +167,7 @@ function getpage(pagei){
     getpagenum(pagei);
     gotoTop(10);
     $('html,body').animate({scrollTop:0},100);
+    $('.mycontainer').height($('.col-xs-10').height());
     $('#content').height($('.mycontainer').height());
 }
 
@@ -216,7 +222,7 @@ function ret_info(){
 		case "尚未批阅":
 			s_condition = "not_read";
 			break;
-		case "已经批阅":
+		case "已经忽略":
 			s_condition = "already_ignore";
 			break;
         case "已经采纳":
@@ -246,7 +252,7 @@ function ret_info(){
 			s_tdate = toDate.value + " 00:00:00";
 			break;
 	}
-	if(s_fdate > s_tdate){
+	if(s_fdate!="none" && s_fdate > s_tdate){
 		alert("起始日期应当小于结束日期");
 		return;
 	}

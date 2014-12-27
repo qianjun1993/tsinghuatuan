@@ -1,0 +1,87 @@
+{% extends "mobile_base.html" %}
+
+{% load staticfiles %}
+
+{% block title %}
+兑换 - 清华紫荆之声
+{% endblock %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static "css/bootstrap.css" %}?_=3">
+    <link rel="stylesheet" href="{% static "css/bootstrap-theme.css" %}?_=3">
+{% endblock %}
+
+{% block js %}
+    <script>
+        var myweixin_id='{{weixin_id}}';
+        var items = [
+            {% for item in items %}
+                {
+                    'name': '{{ item.name|escapejs }}',
+                    'pic_url': '{{ item.pic_url|escapejs }}',
+                    'remain_number': {{ item.remain_number|escapejs }},
+                    'points': {{ item.points|escapejs }},
+                    'id':'{{ item.id|escapejs }}'
+                },
+            {% endfor %}
+        ];
+        var mypoint={{ point }};
+    </script>
+    <script type="text/javascript" src="{% static "js/jquery-1.11.1.min.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/exchange.js" %}"></script>
+{% endblock %}
+</head>
+
+{% block content %}
+
+    <div id="alert_area" class="col-xs-12" style="height: auto"></div>
+    <div class="col-xs-1" style="height: auto;min-height: 100px;width:5%"></div>
+    <div class="col-xs-10" style="height: auto;min-height: 100px;width:90%" >
+
+        <div class="well">
+            <h3 style="text-align:center"><span>您拥有积分</span><span id="points" style="color: red">{{ point }}</span></h3>
+        </div>
+        <form class="form-horizontal" role="form" action="{% url "userpage.views.exchange_post" %}" method="post" id="validationForm" onsubmit="return false;">
+            {% csrf_token %}
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>名称</th>
+                <th>数量</th>
+                <th>积分</th>
+                <th>图片</th>
+                <th>兑换</th>
+            </tr>
+            </thead>
+            <tbody id="tbody-items">
+            </tbody>
+        </table>
+        </form>
+        <div class="modal fade" id="myPrs" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">确认兑换</h4>
+              </div>
+              <div class="modal-body">
+                <h4>您是否确认兑换</h4>
+                <h4 id="get_prs">
+
+                </h4>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="cancel" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" id="conf_prs" class="btn btn-primary" data-dismiss="modal" onclick="get_prs(this)">确定</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div>
+    <div class="col-xs-1" style="height: auto;min-height: 100px"></div>
+
+{% endblock %}
+
+</html>

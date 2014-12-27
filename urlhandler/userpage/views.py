@@ -67,13 +67,13 @@ def validate_through_student(userid, userpass):
 def validate_post(request):
     if (not request.POST) or (not 'openid' in request.POST) or \
             (not 'username' in request.POST) or (not 'password' in request.POST):
-        raise Http404
+       return  HttpResponse('Error')
     userid = request.POST['username']
-    if userid.isdigit():
-        raise Http404
+    #if userid.isdigit():
+     #  return HttpResponse('Error')
     secret = request.POST['password'].encode('gb2312')
     validate_result = validate_through_AuthTHU(secret)
-    if not validate_result == 'Success' :
+    if validate_result == 'Success' :
         openid = request.POST['openid']
         try:
             User.objects.filter(stu_id=userid).update(status=0)
@@ -269,7 +269,6 @@ def feedback_view(request, weixin_id):
     try:
         currentcomment=model.getlastcomment(currentuser[0].stu_id)
         time = currentcomment.time + feedback_checktime(currentuser[0].points)
-        print time
         if time > datetime.datetime.now():
             variables=RequestContext(request, {'time': time.strftime("%Y-%m-%d-%H-%M-%S")})
             return render_to_response('warning.html', variables)
@@ -280,7 +279,6 @@ def feedback_view(request, weixin_id):
     return render_to_response('feedback.html', variables)
 
 def feedback_post(request):
-    print request.POST
     if (not request.POST) or (not 'weixin_id' in request.POST) or \
              (not 'feedback_text' in request.POST) or (not 'feedback_type' in request.POST):
         return HttpResponse('Error')
@@ -294,13 +292,10 @@ def feedback_post(request):
     except:
         return HttpResponse('Error')
     try:
-        print feedback_text
-        print feedback_type
-        print currentuser[0].stu_id
         model.addfeedback(currentuser[0].stu_id,feedback_text,feedback_type)
+        return HttpResponse('Success')
     except:
         return HttpResponse('Error')
-    return HttpResponse('Success')
 
 def feedback_checktime(point):
     if(point>200):
@@ -318,4 +313,35 @@ def feedback_checktime(point):
     if(point<-200):
         return datetime.timedelta(hours=72)
     return datetime.timedelta(hours=24)
+
+def exchange_view(request, weixin_id):
+    try:
+        point = model.check_point(weixin_id)
+        items = model.getallItem()     
+        variables = RequestContext(request, {'weixin_id': weixin_id, 'point': point,'items': items},)
+        return render_to_response('exchange.html', variables)
+    except:
+        raise Http404
         
+
+def exchange_post(request):
+    if (not request.POST) or (not 'weixin_id' in request.POST) or \
+             (not 'itemid' in request.POST):
+        return HttpResponse('Error')
+    weixin_id = request.POST['weixin_id']
+    itemid = request.POST['itemid']
+    try:
+        model.addexchange(weixin_id,itemid)
+        return HttpResponse('Success')
+    except:
+        return HttpResponse('Error')
+    
+def item_view(request, weixin_id):
+    try:
+        point = model.check_point(weixin_id)
+        items = model.getmyItem(weixin_id)
+        variables = RequestContext(request, {'weixin_id': weixin_id, 'point': point,'items': items},)
+        return render_to_response('item.html', variables)
+    except:
+        raise Http404 
+

@@ -75,3 +75,13 @@ def s_reverse_modify_menu():
 def s_reverse_feedback_list():
     return reverse('adminpage.views.feedback_list')
 
+def s_reverse_item_list():
+    return reverse('adminpage.views.item_list')
+
+
+def s_reverse_item_add():
+    return reverse('adminpage.views.item_add')
+
+def s_reverse_exchange_list():
+    return reverse('adminpage.views.exchange_list')
+

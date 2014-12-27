@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect, csrf_exempt
 from django.db.models import F
 import urllib
 import urllib2
-from urlhandler.models import Activity, Ticket, Map
+from urlhandler.models import Activity, Ticket, Map,Item
 from urlhandler.models import User as Booker
 from weixinlib.custom_menu import get_custom_menu, modify_custom_menu, add_new_custom_menu, auto_clear_old_menus
 from weixinlib.settings import get_custom_menu_with_book_acts, WEIXIN_BOOK_HEADER
@@ -556,3 +556,77 @@ def feedback_search(request):
         count=count-1
     feedbacks[str(count)] = len(feedbackmodels)
     return HttpResponse(json.dumps(feedbacks,ensure_ascii=False),content_type='application/json')
+
+def item_list(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(s_reverse_admin_home())
+    items = model.getallItem()
+    permission_num = 1 if request.user.is_superuser else 0
+    return render_to_response('item_list.html', {
+        'items': items,
+        'permission': permission_num,
+    })
+
+def item_create(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(s_reverse_admin_home())
+
+    return render_to_response('item_detail.html', {
+        'item': {
+            'name': u'新增物品',
+        }
+    }, context_instance=RequestContext(request))
+
+def item_post(request):
+    if not request.POST:
+        raise Http404
+    post = request.POST
+    rtnJSON = dict()
+    try:
+        item = model.item_createone(post)
+        #rtnJSON['updateUrl'] = s_reverse_item_detail(item.id)
+    except Exception as e:
+        print 1
+        rtnJSON['error'] = str(e)
+    return HttpResponse(json.dumps(rtnJSON, cls=DatetimeJsonEncoder), content_type='application/json')
+
+def exchange_list(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect(s_reverse_admin_home())
+    return render_to_response('exchange_list.html', context_instance=RequestContext(request))
+
+
+
+def exchange_post(request):
+    if (not request.POST) or (not 'post_type' in request.POST):
+        return HttpResponse("Error")
+    if(request.POST['post_type']=='0'):
+        return exchange_search(request)
+    else:
+        return exchange_reponse(request)
+
+def exchange_search(request):
+    if (not 'exchange_stu_id' in request.POST) or (not 'exchange_checktype' in request.POST):
+        return HttpResponse("Error")
+    stu_id = request.POST['exchange_stu_id']
+    checktype = request.POST['exchange_checktype']
+    try:
+        exchanges = {}
+        exchanges = model.getexchanges(stu_id, checktype)
+        return HttpResponse(json.dumps(exchanges,ensure_ascii=False),content_type='application/json')
+    except:
+        return HttpResponse("Error")
+
+def exchange_reponse(request):
+    if (not request.POST) or (not 'exchange_id' in request.POST): 
+        return HttpResponse("Error")
+    exchange_id = request.POST['exchange_id']
+    try:
+        print 1
+        if model.success_exchange_models(exchange_id):
+            return HttpResponse("Success")
+        else:
+            return HttpResponse("Error")
+    except:
+        return HttpResponse("Error")
+

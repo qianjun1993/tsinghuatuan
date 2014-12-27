@@ -413,6 +413,28 @@ def response_user_point(msg):
     fromuser = get_msg_from(msg)
     user = get_user(fromuser)
     if user is None:
-        return get_reply_text_xml(msg, get_text_unbinded_user_feedback(fromuser))
+        return get_reply_text_xml(msg, get_text_unbinded_user_point(fromuser))
     return get_reply_text_xml(msg, get_reply_user_point(msg, user))
+
+def check_user_exchange(msg):
+    return handler_check_text_header(msg, ['兑换'])
+
+def response_user_exchange(msg):
+    fromuser = get_msg_from(msg)
+    user = get_user(fromuser)
+    if user is None:
+        return get_reply_text_xml(msg, get_text_unbinded_user_exchange(fromuser))
+    return get_reply_text_xml(msg, get_reply_user_exchange(msg, user))
+
+def check_user_item(msg):
+    return handler_check_text_header(msg, ['查物'])
+
+def response_user_item(msg):
+    fromuser = get_msg_from(msg)
+    user = get_user(fromuser)
+    if user is None:
+        return get_reply_text_xml(msg, get_text_unbinded_user_item(fromuser))
+    return get_reply_text_xml(msg, get_reply_user_item(msg, user))
+
+
 

@@ -102,7 +102,7 @@ def validate_gettime(request):
     res_data = urllib2.urlopen(req)
     try:
         res = res_data.read()
-        return HttpResponse("1")
+        return HttpResponse(res)
     except:
             return 'Error'
 
